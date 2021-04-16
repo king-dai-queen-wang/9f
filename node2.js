@@ -1,15 +1,20 @@
 const puppeteer = require('puppeteer');
 const order = [
-    // 测试 2012240217077163529529a
+    // 测试 2012240217077163529529a 201220125519217d0fbe808 20121823121379862450a79
     // haier洗衣机
     'https://web.meiduzaixian.com/mall/mall-app/mall-core/index.html#/order/order-confirm?sku=201218203131277401a24ee&productCount=1&productSourceType=1&shopId=null',
     // 电压力锅
     'https://web.meiduzaixian.com/mall/mall-app/mall-core/index.html#/order/order-confirm?sku=2012181243581147ad1e340&productCount=1&productSourceType=1&shopId=null',
     // switch
     'https://web.meiduzaixian.com/mall/mall-app/mall-core/index.html#/order/order-confirm?sku=2012111741446219b3e108c&productCount=1&productSourceType=1&shopId=null',
-    // 小天鹅洗衣机
+    // 小天鹅洗衣机（下架）
     'https://web.meiduzaixian.com/mall/mall-app/mall-core/index.html#/order/order-confirm?sku=201218204943976e2d77885&productCount=1&productSourceType=1&shopId=null',
+    // 小米手机
+    'https://web.meiduzaixian.com/mall/mall-app/mall-core/index.html#/order/order-confirm?sku=201220125519217d0fbe808&productCount=1&productSourceType=1&shopId=null',
+    // 华为 mate30 pro
+    'https://web.meiduzaixian.com/mall/mall-app/mall-core/index.html#/order/order-confirm?sku=20121823121379862450a79&productCount=1&productSourceType=1&shopId=null',
 
+//
 ];
 class NineF {
     constructor() {
@@ -20,16 +25,27 @@ class NineF {
             const browser = await puppeteer.launch({ headless: false});
 
             // await this.loginMall(page);
-            const page = await browser.newPage()
+            const page = await browser.newPage();
             await this.login9f(page);
-            await page.goto(orderUrl, {
-                waitUntil: [
-                    'load',
-                    'domcontentloaded',
-                    'networkidle0'
-                ]
-            });
-            await this.buyGoods(page);
+            await order.forEach(async (orderUrl) => {
+                const pages = await browser.newPage();
+                await pages.goto(orderUrl, {
+                    waitUntil: [
+                        'load',
+                        'domcontentloaded',
+                        'networkidle0'
+                    ]
+                });
+                await this.buyGoods(pages);
+            })
+            // await page.goto(orderUrl, {
+            //     waitUntil: [
+            //         'load',
+            //         'domcontentloaded',
+            //         'networkidle0'
+            //     ]
+            // });
+            // await this.buyGoods(page);
 
             // await this.buyGoods(page);
             // await this.confirmOrder(page);
@@ -193,8 +209,8 @@ class NineF {
 
 }
 
-order.forEach((orderUrl) => {
+/*order.forEach((orderUrl) => {
     new NineF().run(orderUrl)
-})
-// const nineF = new NineF();
-// nineF.run(order[0]);
+})*/
+const nineF = new NineF();
+nineF.run(order[0]);
